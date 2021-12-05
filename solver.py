@@ -22,9 +22,10 @@ def putPass(board, rowDict, colDict, blockDict):
 
 def solve(board):
     assert(board.shape == (9, 9))
-    rowDict = {index: {x: False for x in range(1, 10)} for index in range(9)}
-    colDict = {index: {x: False for x in range(1, 10)} for index in range(9)}
-    blockDict = {(a, b): {x: False for x in range(1, 10)} for b in range(3) for a in range(3)}
+    # these dicts store the remaining numbers for each row
+    rowDict = {index: {x for x in range(1, 10)} for index in range(9)}
+    colDict = {index: {x for x in range(1, 10)} for index in range(9)}
+    blockDict = {(a, b): {x for x in range(1, 10)} for b in range(3) for a in range(3)}
     rowDict, colDict, blockDict = hasPass(board, rowDict, colDict, blockDict)
     board = putPass(board, rowDict, colDict, blockDict)
     rowDict, colDict, blockDict = hasPass(board, rowDict, colDict, blockDict)
