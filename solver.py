@@ -7,17 +7,32 @@ def hasPass(board, rowDict, colDict, blockDict):
             num = board[i][j]
             if num == 0:
                 continue
-            rowDict[i][num] = True
-            colDict[j][num] = True
-            blockDict[(j//3, i//3)][num] = True # the blocks are meant to be indexed sort-of like an array with the top 3 being 0,0 1,0 and 2, 0
+            rowDict[i] = rowDict[i] - {num}
+            colDict[j] = colDict[j] - {num}
+            blockDict[(i//3, j//3)] = blockDict[(i//3, j//3)] - {num} # the blocks are meant to be indexed sort-of like an array with the top 3 being 0,0 1,0 and 2, 0
     return rowDict, colDict, blockDict
 
 def putPass(board, rowDict, colDict, blockDict):
     for i in range(9):
         for j in range(9):
-            for num in range(1, 10):
-                if rowDict[i][num]:
-                    
+            if board[i][j] != 0:
+                continue
+            if len(rowDict[i]) == 1:
+                board[i][j] = list(rowDict[i])[0]
+            elif len(colDict[j]) == 1:
+                board[i][j] = list(colDict[j])[0]
+            elif len(blockDict[(i//3, j//3)]) == 1:
+                board[i][j] = list(blockDict[(i//3, j//3)])[0]
+            elif len(rowDict[i] & colDict[j]) == 1:
+                board[i][j] = list(rowDict[i] & colDict[j])[0]
+            elif len(rowDict[i] & blockDict[(i//3, j//3)]) == 1:
+                board[i][j] = list(rowDict[i] & blockDict[(i//3, j//3)])[0]
+            elif len(colDict[j] & blockDict[(i//3, j//3)]) == 1:
+                board[i][j] = list(colDict[j] & blockDict[(i//3, j//3)])[0]
+            elif len(colDict[j] & rowDict[i] & blockDict[(i//3, j//3)]) == 1:
+                board[i][j] = list(colDict[j] & rowDict[i] & blockDict[(i//3, j//3)])[0]
+            else:
+                continue
     return board
 
 def solve(board):
@@ -27,16 +42,13 @@ def solve(board):
     colDict = {index: {x for x in range(1, 10)} for index in range(9)}
     blockDict = {(a, b): {x for x in range(1, 10)} for b in range(3) for a in range(3)}
     rowDict, colDict, blockDict = hasPass(board, rowDict, colDict, blockDict)
-    board = putPass(board, rowDict, colDict, blockDict)
-    rowDict, colDict, blockDict = hasPass(board, rowDict, colDict, blockDict)
+    print("Unsolved Board:")
     print(board)
-    pprint(rowDict)
-    pprint(colDict)
-    pprint(blockDict)
-    if 0 not in board:
-        return board
-    else:
-        print('ab')
+    while 0 in board:
+        board = putPass(board, rowDict, colDict, blockDict)
+        rowDict, colDict, blockDict = hasPass(board, rowDict, colDict, blockDict)
+    print("Solved Board:")
+    print(board)
 
 if __name__ == "__main__":
     board1 = np.array([
