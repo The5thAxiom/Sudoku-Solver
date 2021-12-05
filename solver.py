@@ -9,7 +9,7 @@ def hasPass(board, rowDict, colDict, blockDict):
                 continue
             rowDict[i] = rowDict[i] - {num}
             colDict[j] = colDict[j] - {num}
-            blockDict[(i//3, j//3)] = blockDict[(i//3, j//3)] - {num} # the blocks are meant to be indexed sort-of like an array with the top 3 being 0,0 1,0 and 2, 0
+            blockDict[(i//3, j//3)] = blockDict[(i//3, j//3)] - {num}
     return rowDict, colDict, blockDict
 
 def putPass(board, rowDict, colDict, blockDict):
